@@ -1,0 +1,7 @@
+{
+  "id": "log_parser",
+  "title": "Structured log parsing and error ranking",
+  "entrypoint": "solution.py",
+  "timeout_seconds": 20,
+  "prompt": "Implement three functions in solution.py for log lines shaped like:\n\n  2024-05-01T12:00:03Z ERROR payments: card declined (code=402)\n\n(timestamp, LEVEL, component, colon, message).\n\n1. parse_line(line) -> dict | None: return {'timestamp', 'level', 'component', 'message'} or None if the line is malformed (bad timestamp, unknown level, missing component). Levels are DEBUG, INFO, WARN, WARNING, ERROR, CRITICAL, matched case-insensitively and returned upper-case; WARNING is normalised to WARN. Trailing newlines are fine. Only the first colon after the component splits it from the message.\n2. aggregate(lines) -> {'levels': {LEVEL: count}, 'malformed': n}: count valid lines by level; blank lines are ignored, other unparseable lines count as malformed.\n3. top_errors(lines, n=3) -> list[(message, count)]: the most frequent ERROR/CRITICAL messages, after replacing every run of digits with '#'. Sort by count descending, then message ascending."
+}

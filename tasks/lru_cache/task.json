@@ -1,0 +1,7 @@
+{
+  "id": "lru_cache",
+  "title": "LRU cache with statistics",
+  "entrypoint": "solution.py",
+  "timeout_seconds": 20,
+  "prompt": "Implement class LRUCache(capacity) in solution.py.\n\n- get(key, default=None): return the value and mark the key most-recently-used; count a hit or a miss.\n- put(key, value): insert or update and mark most-recently-used; when over capacity evict the least-recently-used key and count an eviction. Updating an existing key never evicts.\n- __len__ and __contains__: membership tests must NOT change recency.\n- keys(): keys ordered from least- to most-recently used.\n- stats(): dict with integer keys 'hits', 'misses', 'evictions'.\n- capacity < 1 raises ValueError."
+}

@@ -1,0 +1,7 @@
+{
+  "id": "merge_intervals",
+  "title": "Interval merging, coverage and gaps",
+  "entrypoint": "solution.py",
+  "timeout_seconds": 20,
+  "prompt": "Implement three functions in solution.py operating on closed intervals given as (start, end) tuples.\n\n1. merge(intervals) -> list[tuple]: merge overlapping AND touching intervals (e.g. (1,4) and (4,5) become (1,5)). Input may be unsorted and must not be mutated. Return a sorted list of tuples. Raise ValueError if any interval has start > end.\n2. total_covered(intervals) -> number: total length covered by the union of the intervals.\n3. gaps(intervals, lo, hi) -> list[tuple]: the uncovered sub-intervals of [lo, hi], sorted, clipped to the window."
+}
