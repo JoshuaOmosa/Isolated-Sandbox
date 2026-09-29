@@ -59,3 +59,24 @@ def test_probe_script_refuses_to_run_outside_the_sandbox():
     assert proc.returncode == 2
     assert "PROBE " not in proc.stdout
     assert "refusing to run" in proc.stderr
+
+
+def _load_probes():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("escape_probes", ROOT / "probes" / "escape_probes.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)  # safe: probes only run from main(), which is guarded
+    return module
+
+
+def test_public_image_gpg_key_is_not_reported_as_a_leaked_secret():
+    """Regression: the python base image ships GPG_KEY (a public key fingerprint)."""
+    probes = _load_probes()
+    assert probes.suspicious_variables({"GPG_KEY": "7169605F62C751356D054A26A821E680E5FA6305", "PATH": "/usr/bin"}) == []
+
+
+def test_real_looking_secrets_are_still_flagged():
+    probes = _load_probes()
+    env = {"AWS_SECRET_ACCESS_KEY": "x", "GITHUB_TOKEN": "y", "DB_PASSWORD": "z", "GPG_KEY": "pub", "HOME": "/tmp"}
+    assert probes.suspicious_variables(env) == ["AWS_SECRET_ACCESS_KEY", "DB_PASSWORD", "GITHUB_TOKEN"]

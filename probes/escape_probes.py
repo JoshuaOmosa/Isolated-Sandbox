@@ -227,10 +227,20 @@ def docker_socket_absent():
     return not present, f"present={present}"
 
 
+# Variables baked into the official python base image that look secret-ish by name but are
+# public: GPG_KEY is the *fingerprint of Python's public release-signing key*.
+BENIGN_IMAGE_VARIABLES = {"GPG_KEY"}
+SECRET_NAME = re.compile(r"KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL|AWS_|GITHUB_", re.I)
+
+
+def suspicious_variables(environ) -> list[str]:
+    """Names that look like host secrets, minus known-public image defaults."""
+    return sorted(n for n in environ if SECRET_NAME.search(n) and n not in BENIGN_IMAGE_VARIABLES)
+
+
 @probe
 def environment_clean():
-    pattern = re.compile(r"KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL|AWS_|GITHUB_", re.I)
-    leaked = sorted(name for name in os.environ if pattern.search(name))
+    leaked = suspicious_variables(os.environ)
     return not leaked, f"suspicious variables: {leaked}"
 
 
